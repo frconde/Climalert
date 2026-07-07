@@ -26,5 +26,6 @@ public class EnviadorMailImpl implements EnviadorMail {
     mensaje.setSubject(asunto);
     mensaje.setText(cuerpo);
     javaMailSender.send(mensaje);
+    System.out.println("Se envió un correo a: " + para);
   }
 }

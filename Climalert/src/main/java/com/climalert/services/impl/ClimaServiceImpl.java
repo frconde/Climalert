@@ -29,7 +29,7 @@ public class ClimaServiceImpl implements ClimaService {
       nuevoClima.setPais(location.country());
       nuevoClima.setTemperaturaCelsius(current.temp_c());
       nuevoClima.setTemperaturaFahrenheit(current.temp_f());
-      nuevoClima.setCondicion(current.condition().condition());
+      nuevoClima.setCondicion(current.condition().text());
       nuevoClima.setVelocidadVientoKmh(current.wind_kph());
       nuevoClima.setHumedad(current.humidity());
 

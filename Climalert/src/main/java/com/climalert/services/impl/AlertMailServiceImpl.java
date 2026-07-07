@@ -15,17 +15,36 @@ public class AlertMailServiceImpl implements AlertMailService {
       "admin@clima.com",
       "emergencias@clima.com",
       "meteorologia@clima.com"
+
   );
 
+  private static final long MIN_INTERVAL_MS = 30_000;
+
   private final EnviadorMail enviadorMail;
+  private long lastSendTime = 0;
 
   public void enviarAlerta(Clima clima) {
     String asunto = "Alerta de clima extremo";
     String cuerpo = mapearClima(clima);
 
     for (String correo : CORREOS_DESTINO) {
+      rateLimit();
       enviadorMail.enviar(correo, asunto, cuerpo);
     }
+  }
+
+  // Puse esto para que no me estalle por mandar muchos correos en un segundo
+  private synchronized void rateLimit() {
+    long now = System.currentTimeMillis();
+    long wait = MIN_INTERVAL_MS - (now - lastSendTime);
+    if (wait > 0) {
+      try {
+        Thread.sleep(wait);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    }
+    lastSendTime = System.currentTimeMillis();
   }
   private String mapearClima(Clima clima) {
     return """
